@@ -23,7 +23,7 @@ public class CustomerController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping
+    @PostMapping("/create")
     ApiResponse<CustomerResponse> createCustomer(@RequestBody @Valid CustomerCreationRequest request){
         return ApiResponse.<CustomerResponse>builder()
                 .message("[OK] Created a customer")

@@ -8,7 +8,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build source code with maven
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests --no-transfer-progress
 
 #Stage 2: create image
 # Start with Amazon Correto JDK 21

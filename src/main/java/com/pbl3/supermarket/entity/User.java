@@ -24,7 +24,6 @@ public class User {
     String id;
 
     @Column(unique = true, nullable = false)
-    @UniqueElements
     String username;
     String password;
 
