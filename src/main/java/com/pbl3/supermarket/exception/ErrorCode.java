@@ -15,6 +15,7 @@ public enum ErrorCode {
     SUPPLIER_NAME_EXISTED(1011, "SUPPLIER NAME EXISTED"),
     PRODUCT_NAME_EXISTED(1012, "PRODUCT NAME EXISTED"),
     INVALIDATED_TOKEN(1013, "INVALIDATED TOKEN"),
+    CATEGORY_NOT_FOUND(1014, "CATEGORY NOT FOUND")
     ;
     ErrorCode(int code, String message){
         this.code = code;

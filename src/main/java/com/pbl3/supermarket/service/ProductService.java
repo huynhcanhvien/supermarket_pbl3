@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -149,5 +151,25 @@ public class ProductService {
             productResponses.add(toProductResponse(product, supplierResponse, categoriesResponse));
         });
         return productResponses;
+    }
+
+    public Map<String, List<ProductResponse> > getALlProductByCategories()
+    {
+        Map<String, List<ProductResponse> > results = new HashMap<>();
+        List<Category> categories = categoryRepository.findAll();
+        if (categories.isEmpty()){
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+
+        for(Category category : categories) {
+            List<Product> products = category.getProducts();
+            List<ProductResponse> productResponses = new ArrayList<>();
+            for(Product product : products) {
+                productResponses.add(product.toProductResponse());
+            }
+            results.put(category.getName(), productResponses);
+        }
+
+        return results;
     }
 }

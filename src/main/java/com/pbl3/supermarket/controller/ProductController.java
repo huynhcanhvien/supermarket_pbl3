@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/product")
@@ -51,11 +52,19 @@ public class ProductController {
                 .result(productService.searchProducts(keySearch))
                 .build();
     }
-    @GetMapping("/searchByCategories")
+    @PostMapping("/searchByCategories")
     public ApiResponse<List<ProductResponse>> getProductsByCategories(@RequestBody SearchProductByCategoriesRequest request) {
         return ApiResponse.<List<ProductResponse>>builder()
                 .message("[OK] Get Products by Categories")
                 .result(productService.searchProductsByCategories(request))
+                .build();
+    }
+    @GetMapping("/ByCategories")
+    public ApiResponse<Map<String, List<ProductResponse> >> getAllProductByCategories()
+    {
+        return ApiResponse.<Map<String, List<ProductResponse>> >builder()
+                .message("[OK] Get All Product By Categories")
+                .result(productService.getALlProductByCategories())
                 .build();
     }
 }
