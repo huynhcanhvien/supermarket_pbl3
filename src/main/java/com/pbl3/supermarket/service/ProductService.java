@@ -63,7 +63,7 @@ public class ProductService {
         return ProductResponse.builder()
                 .id(product.getId())
                 .supplier(supplierResponse)
-                .categories(categoriesResponse)
+                .category(categoriesResponse.getFirst())
                 .createDate(product.getCreateDate())
                 .discount(product.getDiscount())
                 .price(product.getPrice())
@@ -86,7 +86,8 @@ public class ProductService {
             List<Category> categories = new ArrayList<>();
             Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new AppException(ErrorCode.SUPPLIER_ID_NOTFOUND));
             for (Long categoryId : categoryIds) {
-                categoryRepository.findById(categoryId).ifPresent(categories::add);
+                Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_ID_NOTFOUND));
+                categories.add(category);
             }
             product.setSupplier(supplier);
             product.setCategories(categories);

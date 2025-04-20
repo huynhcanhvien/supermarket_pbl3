@@ -41,6 +41,8 @@ public class CustomerService {
     private CartItemRepository cartItemRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     // Register:
     private Cart createCart(){
@@ -87,30 +89,56 @@ public class CustomerService {
         }
         return customerResponses;
     }
-    public CustomerResponse deleteCustomerById(String id){
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_ID_NOTFOUND));
-        CustomerResponse customerResponse = customerToCustomerResponse(customer);
-        customerRepository.delete(customer);
-        return customerResponse;
+    public Boolean deleteCustomerById(String id){
+        if(customerRepository.findById(id).isPresent()){
+            Customer customer = customerRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_ID_NOTFOUND));
+            Cart cart = customer.getCart();
+            if(cart != null)
+            {
+                cartItemRepository.deleteAll();
+                cart.setCustomer(null);
+
+            }
+            customerRepository.deleteById(id);
+            userRepository.deleteById(id);
+            return true;
+        }
+        else {
+            throw new AppException(ErrorCode.CUSTOMER_ID_NOTFOUND);
+        }
     }
 
-    public CustomerResponse updateCustomer(String id, CustomerUpdateRequest request){
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_ID_NOTFOUND));
+    public CustomerResponse updateCustomer(CustomerUpdateRequest request){
+        var SecurityContext = SecurityContextHolder.getContext();
+        String username = SecurityContext.getAuthentication().getName();
+        Customer customer = customerRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
         if(request.getFirstName() != null) customer.setFirstName(request.getFirstName());
         if(request.getLastName() != null) customer.setLastName(request.getLastName());
         if(request.getPhone() != null) customer.setPhone(request.getPhone());
         if(request.getAddress() != null) customer.setAddress(request.getAddress());
         if(request.getBirthDate() != null) customer.setBirthDate(request.getBirthDate());
         if(request.getEmail() != null) customer.setEmail(request.getEmail());
+
+        customerRepository.save(customer);
+        return customerToCustomerResponse(customer);
+    }
+    public Boolean updatePassword(CustomerUpdateRequest request)
+    {
+        var SecurityContext = SecurityContextHolder.getContext();
+        String username = SecurityContext.getAuthentication().getName();
+        Customer customer = customerRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
         if(request.getPassword() != null && request.getCurrent_password() != null) {
             if(passwordEncoder.matches(request.getCurrent_password(), customer.getPassword())) {
                 customer.setPassword(passwordEncoder.encode(request.getPassword()));
             }
+            else throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-        customerRepository.save(customer);
-        return customerToCustomerResponse(customer);
-    }
 
+        customerRepository.save(customer);
+        return true;
+    }
     private CustomerResponse customerToCustomerResponse(Customer customer) {
         return CustomerResponse.builder()
                 .id(customer.getId())

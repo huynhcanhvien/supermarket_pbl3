@@ -21,6 +21,9 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     List<CartItem> cartItemList;
 
-    @OneToOne
-    Customer customer;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "customer_id",
+            foreignKey = @ForeignKey(name = "FK_cart_customer"))
+    private Customer customer;
+
 }

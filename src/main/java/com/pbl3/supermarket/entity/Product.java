@@ -73,7 +73,7 @@ public class Product {
         return ProductResponse.builder()
                 .id(this.getId())
                 .supplier(toSupplierResponse(this.supplier))
-                .categories(toCategoryResponse(this.categories))
+                .category(toCategoryResponse(this.categories).getFirst())
                 .createDate(this.getCreateDate())
                 .discount(this.getDiscount())
                 .price(this.getPrice())

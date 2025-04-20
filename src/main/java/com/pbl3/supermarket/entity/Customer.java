@@ -1,8 +1,6 @@
 package com.pbl3.supermarket.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -18,8 +16,9 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer")
     List<Receipt> receipts;
 
-    @OneToOne
-    Cart cart;
+    @OneToOne(mappedBy = "customer")
+    private Cart cart;
+
 
 
     public void setCart(Cart cart) {

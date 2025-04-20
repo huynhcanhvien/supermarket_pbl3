@@ -23,5 +23,5 @@ public class ProductResponse {
     LocalDate expiryDate;
 
     SupplierResponse supplier;
-    List<CategoryResponse> categories;
+    CategoryResponse category;
 }

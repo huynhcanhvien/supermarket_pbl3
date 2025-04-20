@@ -47,21 +47,27 @@ public class CustomerController {
                 .build();
     }
     @DeleteMapping("/{customerID}")
-    ApiResponse<CustomerResponse> deleteCustomer(@PathVariable("customerID") String customerID){
-        return ApiResponse.<CustomerResponse>builder()
+    ApiResponse<Boolean> deleteCustomer(@PathVariable("customerID") String customerID){
+        return ApiResponse.<Boolean>builder()
                 .message("[OK] Deleted a customer")
                 .result(customerService.deleteCustomerById(customerID))
                 .build();
     }
 
-    @PatchMapping("/{customerId}")
-    ApiResponse<CustomerResponse> updateCustomer(@PathVariable("customerId") String customerID, @Valid @RequestBody CustomerUpdateRequest request){
+    @PatchMapping
+    ApiResponse<CustomerResponse> updateCustomer(@Valid @RequestBody CustomerUpdateRequest request){
         return ApiResponse.<CustomerResponse>builder()
                 .message("[OK] Updated a customer")
-                .result(customerService.updateCustomer(customerID, request))
+                .result(customerService.updateCustomer(request))
                 .build();
     }
-
+    @PatchMapping("/pass")
+    ApiResponse<Boolean> updatePassword(@Valid @RequestBody CustomerUpdateRequest request) {
+        return ApiResponse.<Boolean>builder()
+                .message("[OK] Updated a customer's password")
+                .result(customerService.updatePassword(request))
+                .build();
+    }
     @GetMapping("/myInfo")
     ApiResponse<CustomerResponse> getMyInfo()
     {
@@ -86,6 +92,7 @@ public class CustomerController {
                 .result(cartService.addToCart(request))
                 .build();
     }
+
     @PostMapping("/order")
     ApiResponse<ReceiptResponse> order()
     {
