@@ -1,6 +1,7 @@
 package com.pbl3.supermarket.controller;
 
 import com.pbl3.supermarket.dto.request.ProductCreationRequest;
+import com.pbl3.supermarket.dto.request.ProductUpdateRequest;
 import com.pbl3.supermarket.dto.request.SearchProductByCategoriesRequest;
 import com.pbl3.supermarket.dto.response.ApiResponse;
 import com.pbl3.supermarket.dto.response.ProductResponse;
@@ -45,11 +46,18 @@ public class ProductController {
                 .result(productService.deleteProductById(productId))
                 .build();
     }
-    @GetMapping("/search/{keySearch}")
-    public ApiResponse<List<ProductResponse>> getProductsByKeySearch(@PathVariable("keySearch") String keySearch) {
+    @PatchMapping("/update")
+    public ApiResponse<ProductResponse> updateProduct(@RequestParam("productId") String productId,@RequestBody ProductUpdateRequest request) {
+        return ApiResponse.<ProductResponse>builder()
+                .result(productService.updateProduct(productId, request))
+                .message("[OK] Product updated successfully")
+                .build();
+    }
+    @GetMapping("/search")
+    public ApiResponse<List<ProductResponse>> getProductsByKeySearch(@RequestParam("key") String key) {
         return ApiResponse.<List<ProductResponse>>builder()
-                .message("[OK] Get Products by Key Search: " + keySearch)
-                .result(productService.searchProducts(keySearch))
+                .message("[OK] Get Products by Key : " + key)
+                .result(productService.searchProducts(key))
                 .build();
     }
     @PostMapping("/searchByCategories")

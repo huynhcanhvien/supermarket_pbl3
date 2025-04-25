@@ -1,6 +1,8 @@
 package com.pbl3.supermarket.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pbl3.supermarket.dto.request.ProductCreationRequest;
+import com.pbl3.supermarket.dto.request.ProductUpdateRequest;
 import com.pbl3.supermarket.dto.request.SearchProductByCategoriesRequest;
 import com.pbl3.supermarket.dto.response.CategoryResponse;
 import com.pbl3.supermarket.dto.response.ProductResponse;
@@ -19,10 +21,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -98,7 +97,49 @@ public class ProductService {
             return toProductResponse(product, supplierResponse, categoriesResponse);
         }
     }
+    public ProductResponse updateProduct(String productId, ProductUpdateRequest request) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_ID_NOTFOUND));
 
+        if(request.getName() != null)
+            product.setName(request.getName());
+        if(request.getImageUrl() != null)
+            product.setImageUrl(request.getImageUrl());
+
+        if(request.getNewCategoryId() != null){
+            List<Category> categories = new ArrayList<>();
+            categories.add(categoryRepository.findById(request.getNewCategoryId()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_ID_NOTFOUND)));
+            product.setCategories(categories);
+        }
+
+        if(request.getNewSupplierId() != null){
+            Supplier supplier = supplierRepository.findById(request.getNewSupplierId()).orElseThrow(() -> new AppException(ErrorCode.SUPPLIER_ID_NOTFOUND));
+            product.setSupplier(supplier);
+        }
+
+        if(request.getPrice() != product.getPrice() && request.getPrice() != 0.0) {
+            product.setPrice(request.getPrice());
+        }
+        if(request.getDiscount() != product.getDiscount()) {
+            product.setDiscount(request.getDiscount());
+        }
+
+        if(request.getStockQuantity() != product.getStockQuantity()) {
+            product.setStockQuantity(request.getStockQuantity());
+        }
+
+        if(request.getUnit_price() != null) {
+            product.setUnit_price(request.getUnit_price());
+        }
+
+        if(request.getCreateDate() != null){
+            product.setCreateDate(request.getCreateDate());
+        }
+        if(request.getExpiryDate() != null){
+            product.setExpiryDate(request.getExpiryDate());
+        }
+
+        return productRepository.save(product).toProductResponse();
+    }
     public List<ProductResponse> getAllProducts() {
         List<ProductResponse> productResponses = new ArrayList<>();
         for (Product product : productRepository.findAll()) {

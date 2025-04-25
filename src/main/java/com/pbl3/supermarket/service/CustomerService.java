@@ -123,6 +123,7 @@ public class CustomerService {
         customerRepository.save(customer);
         return customerToCustomerResponse(customer);
     }
+
     public Boolean updatePassword(CustomerUpdateRequest request)
     {
         var SecurityContext = SecurityContextHolder.getContext();
