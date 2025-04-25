@@ -32,6 +32,8 @@ public class Product {
     LocalDate createDate;
     LocalDate expiryDate;
 
+    int nBuy;
+
     @ManyToMany
     @JoinTable(
             name = "product_category",
@@ -88,5 +90,9 @@ public class Product {
     public void increaseQuantity(int quantity)
     {
         this.stockQuantity += quantity;
+    }
+
+    public void increaseNBuy(int quantity){
+        this.nBuy += quantity;
     }
 }

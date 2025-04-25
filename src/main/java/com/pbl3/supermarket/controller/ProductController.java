@@ -15,6 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
+
     @Autowired
     private ProductService productService;
 
@@ -39,6 +40,7 @@ public class ProductController {
                 .result(productService.getProductById(productId))
                 .build();
     }
+
     @DeleteMapping("/{productID}")
     public ApiResponse<Boolean> deleteProduct(@PathVariable("productID") String productId) {
         return ApiResponse.<Boolean>builder()
@@ -46,6 +48,7 @@ public class ProductController {
                 .result(productService.deleteProductById(productId))
                 .build();
     }
+
     @PatchMapping("/update")
     public ApiResponse<ProductResponse> updateProduct(@RequestParam("productId") String productId,@RequestBody ProductUpdateRequest request) {
         return ApiResponse.<ProductResponse>builder()
@@ -53,6 +56,7 @@ public class ProductController {
                 .message("[OK] Product updated successfully")
                 .build();
     }
+
     @GetMapping("/search")
     public ApiResponse<List<ProductResponse>> getProductsByKeySearch(@RequestParam("key") String key) {
         return ApiResponse.<List<ProductResponse>>builder()
@@ -60,6 +64,7 @@ public class ProductController {
                 .result(productService.searchProducts(key))
                 .build();
     }
+
     @PostMapping("/searchByCategories")
     public ApiResponse<List<ProductResponse>> getProductsByCategories(@RequestBody SearchProductByCategoriesRequest request) {
         return ApiResponse.<List<ProductResponse>>builder()
@@ -67,6 +72,7 @@ public class ProductController {
                 .result(productService.searchProductsByCategories(request))
                 .build();
     }
+
     @GetMapping("/ByCategories")
     public ApiResponse<Map<String, List<ProductResponse> >> getAllProductByCategories()
     {

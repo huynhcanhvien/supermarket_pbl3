@@ -67,5 +67,23 @@ public class CartService {
         }
         return true;
     }
+    public boolean removeFromCart(String productId, int quantity) {
+        var securityContext = SecurityContextHolder.getContext();
+        String username = securityContext.getAuthentication().getName();
+        Customer customer = customerRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NAME_NOTFOUND));
 
+        boolean removed = false;
+        for(CartItem cartItem : customer.getCart().getCartItemList()){
+            if(cartItem.getProduct().getId().equals(productId)){
+                if(cartItem.getQuantity() >= quantity){
+                    cartItem.setQuantity(cartItem.getQuantity() - quantity);
+                    removed = true;
+                }
+                else throw new AppException(ErrorCode.QUANTITY_NOT_ENOUGH);
+                break;
+            }
+        }
+
+        return removed;
+    }
 }

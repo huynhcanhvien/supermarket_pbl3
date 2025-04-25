@@ -202,7 +202,7 @@ public class CustomerService {
                 ReceiptProduct receiptProduct = new ReceiptProduct(myReceipt, product, quantity);
                 myReceipt.addReceiptProduct(receiptProduct);
                 myReceipt.setTotalPrice(myReceipt.getTotalPrice() + product.getPrice() * quantity);
-
+                product.increaseNBuy(quantity);
                 product.setStockQuantity(product.getStockQuantity() - quantity);
                 productRepository.save(product);
             }

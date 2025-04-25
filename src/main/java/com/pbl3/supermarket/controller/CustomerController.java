@@ -92,7 +92,16 @@ public class CustomerController {
                 .result(cartService.addToCart(request))
                 .build();
     }
+    @PostMapping("/removeFromCart")
+    ApiResponse<Boolean> removeFromCart(@RequestBody  AddProductToCartRequest request ){
+        String productId = request.getProductId();
+        int quantity = request.getQuantity();
 
+        return ApiResponse.<Boolean>builder()
+                .message("[OK] Removed" + productId + " from Cart")
+                .result(cartService.removeFromCart(productId, quantity))
+                .build();
+    }
     @PostMapping("/order")
     ApiResponse<ReceiptResponse> order()
     {

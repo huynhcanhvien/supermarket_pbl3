@@ -90,7 +90,7 @@ public class ProductService {
             }
             product.setSupplier(supplier);
             product.setCategories(categories);
-
+            product.setNBuy(0);
             SupplierResponse supplierResponse = toSupplierResponse(supplier);
             List<CategoryResponse> categoriesResponse = toCategoryResponse(categories);
             productRepository.save(product);
