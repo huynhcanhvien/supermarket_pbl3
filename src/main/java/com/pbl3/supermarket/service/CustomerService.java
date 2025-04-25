@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -206,7 +203,7 @@ public class CustomerService {
             {
                 ReceiptProduct receiptProduct = new ReceiptProduct(myReceipt, product, quantity);
                 myReceipt.addReceiptProduct(receiptProduct);
-                myReceipt.setTotalPrice(myReceipt.getTotalPrice() + product.getPrice() * quantity);
+                myReceipt.setTotalPrice(myReceipt.getTotalPrice() + product.getPrice() * quantity * ((100 - product.getDiscount()) / 100));
                 product.increaseNBuy(quantity);
                 product.setStockQuantity(product.getStockQuantity() - quantity);
                 productRepository.save(product);
@@ -256,6 +253,7 @@ public class CustomerService {
             receiptResponse.setProductResponseList(new ArrayList<>());
             for(ReceiptProduct receiptProduct : receipt.getReceiptProducts()){
                 ProductResponse productResponse = receiptProduct.getProduct().toProductResponse();
+                productResponse.setQuantity(receiptProduct.getQuantity());
                 receiptResponse.getProductResponseList().add(productResponse);
             }
             receiptResponse.setTotalPrice(receipt.getTotalPrice());
@@ -267,6 +265,7 @@ public class CustomerService {
 
         }
 
+        receiptResponses.sort(Comparator.comparing(ReceiptResponse::getDateTime).reversed());
         return receiptResponses;
     }
     private boolean checkIsAvailableInStock(Product product, int quantity)

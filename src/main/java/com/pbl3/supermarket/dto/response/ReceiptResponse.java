@@ -3,9 +3,12 @@ package com.pbl3.supermarket.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 @Data
 @NoArgsConstructor
@@ -19,4 +22,8 @@ public class ReceiptResponse {
     LocalTime time;
     CustomerResponse customerResponse;
 
+
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.of(date, time);
+    }
 }
