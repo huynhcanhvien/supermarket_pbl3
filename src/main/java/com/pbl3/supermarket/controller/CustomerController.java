@@ -85,6 +85,13 @@ public class CustomerController {
                 .build();
 
     }
+    @GetMapping("/myCart/size")
+    ApiResponse<Integer> getMyCartSize(){
+        return ApiResponse.<Integer>builder()
+                .message("[OK] Get My Cart Size")
+                .result(customerService.getNumberOfProductInCart())
+                .build();
+    }
     @PostMapping("/addToCart")
     ApiResponse<Boolean> addToCart(@RequestBody  AddProductToCartRequest request){ //String productId, int quantity
         return ApiResponse.<Boolean>builder()

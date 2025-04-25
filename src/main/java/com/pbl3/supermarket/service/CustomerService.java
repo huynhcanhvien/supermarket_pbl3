@@ -174,7 +174,9 @@ public class CustomerService {
         }
         return cartItemResponses;
     }
-
+    public Integer getNumberOfProductInCart(){
+        return getMyCart().size();
+    }
     public CustomerResponse getMyInfo()
     {
         var SecurityContext = SecurityContextHolder.getContext();
