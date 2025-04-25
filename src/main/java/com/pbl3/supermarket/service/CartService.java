@@ -77,6 +77,7 @@ public class CartService {
             if(cartItem.getProduct().getId().equals(productId)){
                 if(cartItem.getQuantity() >= quantity){
                     cartItem.setQuantity(cartItem.getQuantity() - quantity);
+                    cartItemRepository.save(cartItem);
                     removed = true;
                 }
                 else throw new AppException(ErrorCode.QUANTITY_NOT_ENOUGH);
