@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-public class SupplierCreationRequest {
+public class SupplierRequest {
     String name;
     String phone;
     String email;
