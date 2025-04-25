@@ -117,4 +117,11 @@ public class CustomerController {
                 .result(customerService.order())
                 .build();
     }
+    @GetMapping("/order")
+    ApiResponse<List<ReceiptResponse>> getOrderHistory(){
+        return ApiResponse.<List<ReceiptResponse>>builder()
+                .message("[OK] Get Order History")
+                .result(customerService.getOrderHistory())
+                .build();
+    }
 }

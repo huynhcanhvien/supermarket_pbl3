@@ -17,6 +17,7 @@ public enum ErrorCode {
     INVALIDATED_TOKEN(1013, "INVALIDATED TOKEN"),
     CATEGORY_NOT_FOUND(1014, "CATEGORY NOT FOUND"),
     QUANTITY_NOT_ENOUGH(1015, "QUANTITY NOT ENOUGH"),
+    CART_IS_EMPTY(1016, "CART IS EMPTY"),
     ;
     ErrorCode(int code, String message){
         this.code = code;

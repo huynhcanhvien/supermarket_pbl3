@@ -25,7 +25,7 @@ public class Receipt {
     @JoinColumn(name = "customer_id")
     Customer customer;
 
-    @OneToMany(mappedBy = "receipt")
+    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ReceiptProduct> receiptProducts = new ArrayList<>();
 
     float totalPrice;

@@ -43,7 +43,8 @@ public class CustomerService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private ReceiptProductRepository receiptProductRepository;
     // Register:
     private Cart createCart(){
         Cart cart = new Cart();
@@ -195,6 +196,8 @@ public class CustomerService {
         Receipt myReceipt = new Receipt();
         myReceipt.setTotalPrice(0);
         customer.addReceipt(myReceipt);
+        if(customer.getCart().getCartItemList().isEmpty()) throw new AppException(ErrorCode.CART_IS_EMPTY);
+
         for(CartItem item : customer.getCart().getCartItemList())
         {
             Product product = item.getProduct();
@@ -207,9 +210,10 @@ public class CustomerService {
                 product.increaseNBuy(quantity);
                 product.setStockQuantity(product.getStockQuantity() - quantity);
                 productRepository.save(product);
+                receiptProductRepository.save(receiptProduct);
             }
             else
-                throw new RuntimeException("The product_name: " + product.getName() + " has quantity is over the stock quantiy of this product!");
+                throw new RuntimeException("The product_name: " + product.getName() + " has quantity is over the stock quantiy of this product  !");
         }
         //xoa trong cart
         for (CartItem item : customer.getCart().getCartItemList())
@@ -235,7 +239,35 @@ public class CustomerService {
         CustomerResponse customerResponse = customerToCustomerResponse(customer);
         receiptResponse.setCustomerResponse(customerResponse);
 
+        receiptRepository.save(myReceipt);
         return receiptResponse;
+    }
+
+    public List<ReceiptResponse> getOrderHistory()
+    {
+        var SecurityContext = SecurityContextHolder.getContext();
+        String username = SecurityContext.getAuthentication().getName();
+        Customer customer = customerRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
+        List<ReceiptResponse> receiptResponses = new ArrayList<>();
+        for(Receipt receipt : customer.getReceipts())
+        {
+            ReceiptResponse receiptResponse = new ReceiptResponse();
+            receiptResponse.setProductResponseList(new ArrayList<>());
+            for(ReceiptProduct receiptProduct : receipt.getReceiptProducts()){
+                ProductResponse productResponse = receiptProduct.getProduct().toProductResponse();
+                receiptResponse.getProductResponseList().add(productResponse);
+            }
+            receiptResponse.setTotalPrice(receipt.getTotalPrice());
+            receiptResponse.setTime(receipt.getBill_time());
+            receiptResponse.setDate(receipt.getBill_date());
+            receiptResponse.setCustomerResponse(customerToCustomerResponse(customer));
+
+            receiptResponses.add(receiptResponse);
+
+        }
+
+        return receiptResponses;
     }
     private boolean checkIsAvailableInStock(Product product, int quantity)
     {
