@@ -39,6 +39,7 @@ public class ProductService {
     SupplierRepository supplierRepository;
     private SupplierResponse toSupplierResponse(Supplier supplier) {
         return SupplierResponse.builder()
+                .id(supplier.getId())
                 .phone(supplier.getPhone())
                 .address(supplier.getAddress())
                 .email(supplier.getEmail())
